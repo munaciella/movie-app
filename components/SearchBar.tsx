@@ -20,11 +20,13 @@ const SearchBar = ({placeHolder, onPress, value, onChangeText}: Props) => {
       />
       <TextInput 
       onPress={onPress} 
+      onSubmitEditing={onPress}
       placeholder={placeHolder} 
       value={value}
       onChangeText={onChangeText}
       placeholderTextColor="#a8b5db"
       className="flex-1 ml-2 text-white"
+      //returnKeyType="search"
       />
     </View>
   );
