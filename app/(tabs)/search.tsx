@@ -29,56 +29,58 @@ const Search = () => {
     setSearchQuery(text);
   };
 
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(async () => {
-  //     if (searchQuery.trim()) {
-  //       await loadMovies();
-
-  //       if (movies?.length! > 0 && movies?.[0]) {
-  //         console.log("About to update search count for", searchQuery, movies[0]);
-  //         await updateSearchCount(searchQuery, movies[0]);
-  //         console.log("Search count updated for", searchQuery, movies[0]);
-  //       }
-  //     } else {
-  //       reset();
-  //     }
-  //   }, 1000);
-
-  //   return () => clearTimeout(timeoutId);
-  // }, [searchQuery]);
-
   useEffect(() => {
-    // every time searchQuery changes, wait 1s then run this
-    const handler = setTimeout(async () => {
-      const q = searchQuery.trim();
-
-      if (!q) {
-        // if they cleared the box, reset your UI and bail
+    const timeoutId = setTimeout(async () => {
+      if (searchQuery.trim()) {
+        await loadMovies();
+      } else {
         reset();
-        return;
-      }
-
-      // 1️⃣ Update your UI
-      await loadMovies();
-
-      // 2️⃣ Hit Appwrite exactly once, using the same first result
-      try {
-        const results = await fetchMovies({ query: q });
-        if (results.length > 0) {
-          console.log("Updating search count for", q);
-          await updateSearchCount(q, results[0]);
-          console.log("✅ Search count updated for", q);
-        }
-      } catch (err) {
-        console.error("❌ Failed to update search count:", err);
       }
     }, 1000);
 
-    return () => clearTimeout(handler);
-    // Only re-run this effect when the *text* changes, not on every render.
-    // We deliberately omit loadMovies/reset from the deps so we don't retrigger.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => clearTimeout(timeoutId);
   }, [searchQuery]);
+
+  useEffect(() => {
+    if (movies?.length! > 0 && movies?.[0]) {
+          console.log("About to update search count for", searchQuery, movies[0]);
+          updateSearchCount(searchQuery, movies[0]);
+          console.log("Search count updated for", searchQuery, movies[0]);
+        }
+  }, [movies])
+
+  // useEffect(() => {
+  //   // every time searchQuery changes, wait 1s then run this
+  //   const handler = setTimeout(async () => {
+  //     const q = searchQuery.trim();
+
+  //     if (!q) {
+  //       // if they cleared the box, reset your UI and bail
+  //       reset();
+  //       return;
+  //     }
+
+  //     // 1️⃣ Update your UI
+  //     await loadMovies();
+
+  //     // 2️⃣ Hit Appwrite exactly once, using the same first result
+  //     try {
+  //       const results = await fetchMovies({ query: q });
+  //       if (results.length > 0) {
+  //         console.log("Updating search count for", q);
+  //         await updateSearchCount(q, results[0]);
+  //         console.log("✅ Search count updated for", q);
+  //       }
+  //     } catch (err) {
+  //       console.error("❌ Failed to update search count:", err);
+  //     }
+  //   }, 1000);
+
+  //   return () => clearTimeout(handler);
+  //   // Only re-run this effect when the *text* changes, not on every render.
+  //   // We deliberately omit loadMovies/reset from the deps so we don't retrigger.
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchQuery]);
 
   return (
     <View className="flex-1 bg-primary">
