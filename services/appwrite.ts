@@ -75,6 +75,8 @@ export interface SavedMovie {
   title: string;
   poster_url: string;
   $createdAt: string; // provided by Appwrite automatically
+  vote_average: number; // optional, if you want to store more details
+  release_date: string; // optional, if you want to store more details
 }
 
 /**
@@ -98,6 +100,8 @@ export const saveMovie = async (movie: Movie): Promise<SavedMovie> => {
       return existing.documents[0] as unknown as SavedMovie;
     }
 
+    const integerRating = Math.round(movie.vote_average);
+
     // 2) Create a new “saved” document
     const created = await database.createDocument(
       DATABASE_ID,
@@ -109,6 +113,8 @@ export const saveMovie = async (movie: Movie): Promise<SavedMovie> => {
         poster_url: movie.poster_path
           ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
           : "",
+        vote_average: integerRating,
+        release_date: movie.release_date,
       }
     );
     return created as unknown as SavedMovie;
