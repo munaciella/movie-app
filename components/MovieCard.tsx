@@ -1,5 +1,3 @@
-// components/MovieCard.tsx
-
 import { Link } from "expo-router";
 import {
   Text,
@@ -13,14 +11,13 @@ import { icons } from "@/constants/icons";
 import { useSaved } from "@/context/SavedContext";
 import { useEffect } from "react";
 
-// 1) Add `hideBookmark?: boolean` to the props interface:
 interface MovieCardProps {
   id: number;
-  poster_path: string;     // either a TMDB path ("/abc.jpg") or a full URL ("https://…")
+  poster_path: string;
   title: string;
   vote_average: number;
   release_date: string;
-  hideBookmark?: boolean;  // when true, do NOT render the little save/bookmark icon
+  hideBookmark?: boolean;
 }
 
 const MovieCard = ({
@@ -29,30 +26,29 @@ const MovieCard = ({
   title,
   vote_average,
   release_date,
-  hideBookmark = false, // default = false (i.e. show bookmark by default)
+  hideBookmark = false,
 }: MovieCardProps) => {
-  // 2) Pull savedIds + addSaved() from context:
   const { savedIds, addSaved } = useSaved();
   const isSaved = savedIds.has(id);
 
-  // Re‐run effect when savedIds changes (so tintColor updates instantly)
-  useEffect(() => {
-    // no‐op; this just causes a re‐render when savedIds changes
-  }, [savedIds]);
+  useEffect(() => {}, [savedIds]);
 
   const onPressSave = async () => {
     try {
       if (!isSaved) {
         await addSaved({
           id,
-          poster_path,   // NOTE: we pass exactly what was passed here
+          poster_path,
           title,
           vote_average,
           release_date,
         } as any);
         Alert.alert("Saved!", `"${title}" has been added to your Saved list.`);
       } else {
-        Alert.alert("Already Saved", `"${title}" is already in your Saved list.`);
+        Alert.alert(
+          "Already Saved",
+          `"${title}" is already in your Saved list.`
+        );
       }
     } catch (err) {
       console.error("Failed to save movie:", err);
@@ -60,11 +56,9 @@ const MovieCard = ({
     }
   };
 
-  // 3) Determine the correct URI for the <Image>:
-  const uri =
-    poster_path.startsWith("http")
-      ? poster_path
-      : `https://image.tmdb.org/t/p/w500${poster_path}`;
+  const uri = poster_path.startsWith("http")
+    ? poster_path
+    : `https://image.tmdb.org/t/p/w500${poster_path}`;
 
   return (
     <View className="mb-6">
@@ -98,7 +92,6 @@ const MovieCard = ({
         </TouchableOpacity>
       </Link>
 
-      {/* 4) Only render the “save/bookmark” button if hideBookmark===false */}
       {!hideBookmark && (
         <Pressable
           onPress={onPressSave}

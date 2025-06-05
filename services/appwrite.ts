@@ -2,7 +2,8 @@ import { Client, Databases, ID, Query } from "react-native-appwrite";
 
 const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!;
 const COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_COLLECTION_ID!;
-const SAVED_COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_SAVED_COLLECTION_ID!;
+const SAVED_COLLECTION_ID =
+  process.env.EXPO_PUBLIC_APPWRITE_SAVED_COLLECTION_ID!;
 const PROJECT_ID = process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!;
 
 if (!DATABASE_ID || !COLLECTION_ID || !SAVED_COLLECTION_ID || !PROJECT_ID) {
@@ -70,39 +71,29 @@ export const getTrendingMovies = async (): Promise<
 };
 
 export interface SavedMovie {
-  $id: string;        // Appwrite’s document ID
+  $id: string;
   movie_id: number;
   title: string;
   poster_url: string;
-  $createdAt: string; // provided by Appwrite automatically
-  vote_average: number; // optional, if you want to store more details
-  release_date: string; // optional, if you want to store more details
+  $createdAt: string;
+  vote_average: number;
+  release_date: string;
 }
 
-/**
- * Save a movie to the “SavedMovies” collection.
- * If movie_id already exists, returns the existing document.
- */
 export const saveMovie = async (movie: Movie): Promise<SavedMovie> => {
   try {
-    // 1) Check if this movie_id is already saved
     const existing = await database.listDocuments(
       DATABASE_ID,
       SAVED_COLLECTION_ID,
-      [
-        Query.equal("movie_id", movie.id),
-        Query.limit(1),
-      ]
+      [Query.equal("movie_id", movie.id), Query.limit(1)]
     );
 
     if (existing.documents.length > 0) {
-      // Already saved → return it
       return existing.documents[0] as unknown as SavedMovie;
     }
 
     const integerRating = Math.round(movie.vote_average);
 
-    // 2) Create a new “saved” document
     const created = await database.createDocument(
       DATABASE_ID,
       SAVED_COLLECTION_ID,
@@ -124,9 +115,6 @@ export const saveMovie = async (movie: Movie): Promise<SavedMovie> => {
   }
 };
 
-/**
- * Remove a saved movie by its Appwrite document ID.
- */
 export const removeSavedMovie = async (docId: string): Promise<void> => {
   try {
     await database.deleteDocument(DATABASE_ID, SAVED_COLLECTION_ID, docId);
@@ -136,17 +124,12 @@ export const removeSavedMovie = async (docId: string): Promise<void> => {
   }
 };
 
-/**
- * Fetch all saved movies, most‐recent first.
- */
 export const getSavedMovies = async (): Promise<SavedMovie[] | undefined> => {
   try {
     const result = await database.listDocuments(
       DATABASE_ID,
       SAVED_COLLECTION_ID,
-      [
-        Query.orderDesc("$createdAt"),
-      ]
+      [Query.orderDesc("$createdAt")]
     );
     return result.documents as unknown as SavedMovie[];
   } catch (err) {
