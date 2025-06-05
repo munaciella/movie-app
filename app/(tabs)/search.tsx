@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import { images } from "@/constants/images";
 import MovieCard from "@/components/MovieCard";
