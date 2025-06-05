@@ -77,7 +77,7 @@ export default function SavedScreen() {
           <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
 
           <View className="flex-1 justify-center items-center">
-            <Text className="text-white text-lg">No saved movies yet.</Text>
+            <Text className="text-gray-400 text-lg">No saved movies yet.</Text>
           </View>
         </ScrollView>
       </View>

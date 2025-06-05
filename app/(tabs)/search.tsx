@@ -68,7 +68,8 @@ const Search = () => {
           gap: 20,
           marginVertical: 6,
         }}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 100, flexGrow: 1,
+          justifyContent: "center", }}
         ListHeaderComponent={
           <>
             <View className="w-full flex-row justify-center mt-20 items-center">
@@ -110,8 +111,8 @@ const Search = () => {
         }
         ListEmptyComponent={
           !movieLoading && !moviesError ? (
-            <View className="mt-10 px-5">
-              <Text className="text-center text-gray-500">
+            <View className="flex-1 justify-center items-center">
+              <Text className="text-lg text-gray-400">
                 {searchQuery.trim()
                   ? "No movies found"
                   : "Search for a movie to see results"}
