@@ -44,11 +44,11 @@ const Search = () => {
 
   useEffect(() => {
     if (movies?.length! > 0 && movies?.[0]) {
-          console.log("About to update search count for", searchQuery, movies[0]);
-          updateSearchCount(searchQuery, movies[0]);
-          console.log("Search count updated for", searchQuery, movies[0]);
-        }
-  }, [movies])
+      console.log("About to update search count for", searchQuery, movies[0]);
+      updateSearchCount(searchQuery, movies[0]);
+      console.log("Search count updated for", searchQuery, movies[0]);
+    }
+  }, [movies]);
 
   return (
     <View className="flex-1 bg-primary">
@@ -59,7 +59,11 @@ const Search = () => {
       />
       <FlatList
         data={movies}
-        renderItem={({ item }) => <MovieCard {...item} />}
+        renderItem={({ item }) => (
+          <View className="w-[30%]">
+            <MovieCard {...item} />
+          </View>
+        )}
         keyExtractor={(item) => item.id.toString()}
         className="px-5"
         numColumns={3}
@@ -68,8 +72,11 @@ const Search = () => {
           gap: 20,
           marginVertical: 6,
         }}
-        contentContainerStyle={{ paddingBottom: 100, flexGrow: 1,
-          justifyContent: "center", }}
+        contentContainerStyle={{
+          paddingBottom: 100,
+          flexGrow: 1,
+          justifyContent: "center",
+        }}
         ListHeaderComponent={
           <>
             <View className="w-full flex-row justify-center mt-20 items-center">
@@ -81,8 +88,8 @@ const Search = () => {
                 value={searchQuery}
                 onChangeText={handleSearch}
                 onPress={() => {
-                  setSearchQuery(""); 
-                  reset(); 
+                  setSearchQuery("");
+                  reset();
                 }}
               />
             </View>
@@ -102,7 +109,7 @@ const Search = () => {
               !moviesError &&
               searchQuery.trim() &&
               movies?.length! > 0 && (
-                <Text className="text-xl text-white font-bold mb-2">
+                <Text className="text-xl text-white font-bold mb-4">
                   Search Results for{" "}
                   <Text className="text-accent">{searchQuery}</Text>
                 </Text>

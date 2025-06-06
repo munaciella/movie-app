@@ -13,7 +13,7 @@ import { useEffect } from "react";
 
 interface MovieCardProps {
   id: number;
-  poster_path: string;
+  poster_path: string | null;
   title: string;
   vote_average: number;
   release_date: string;
@@ -38,7 +38,7 @@ const MovieCard = ({
       if (!isSaved) {
         await addSaved({
           id,
-          poster_path,
+          poster_path: poster_path || "",
           title,
           vote_average,
           release_date,
@@ -56,9 +56,17 @@ const MovieCard = ({
     }
   };
 
-  const uri = poster_path.startsWith("http")
-    ? poster_path
-    : `https://image.tmdb.org/t/p/w500${poster_path}`;
+  let uri: string;
+  if (poster_path) {
+    if (poster_path.startsWith("http")) {
+      uri = poster_path;
+    } else {
+      uri = `https://image.tmdb.org/t/p/w500${poster_path}`;
+    }
+  } else {
+    // Placeholder when no poster is available:
+    uri = "https://placehold.co/600x400/1a1a1a/FFFFFF.png";
+  }
 
   return (
     <View className="mb-6">
