@@ -1,4 +1,3 @@
-// components/SignOutButton.tsx
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import { TouchableOpacity, Text, Alert } from "react-native";
 import { useRouter } from "expo-router";
@@ -11,17 +10,14 @@ export default function SignOutButton() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      // After sign‐out, navigate back to Sign In screen
       router.replace("/sign-in");
     } catch {
       Alert.alert("Error", "Failed to sign out. Please try again.");
     }
   };
 
-  // Don’t render anything until Clerk is fully loaded
   if (!isLoaded) return null;
 
-  // If user is not signed in, show a “Sign In” button
   if (!isSignedIn) {
     return (
       <TouchableOpacity
@@ -33,7 +29,6 @@ export default function SignOutButton() {
     );
   }
 
-  // If user _is_ signed in, show a “Sign Out” button
   return (
     <TouchableOpacity
       onPress={handleSignOut}
