@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   Text,
   Image,
@@ -10,6 +10,7 @@ import {
 import { icons } from "@/constants/icons";
 import { useSaved } from "@/context/SavedContext";
 import { useEffect } from "react";
+import { useAuth } from "@clerk/clerk-expo"
 
 interface MovieCardProps {
   id: number;
@@ -30,10 +31,22 @@ const MovieCard = ({
 }: MovieCardProps) => {
   const { savedIds, addSaved } = useSaved();
   const isSaved = savedIds.has(id);
+  const router = useRouter();
+  const { isSignedIn, isLoaded } = useAuth();
 
   useEffect(() => {}, [savedIds]);
 
   const onPressSave = async () => {
+    if (!isLoaded) return;
+    if (!isSignedIn) {
+      Alert.alert(
+        "Sign In Required",
+        "You must be signed in to save movies.",
+        [{ text: "Sign In", onPress: () => router.push("/(auth)/sign-in") }]
+      );
+      return;
+    }
+
     try {
       if (!isSaved) {
         await addSaved({

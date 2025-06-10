@@ -1,4 +1,3 @@
-// app/(auth)/sign-up.tsx
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import {
@@ -17,7 +16,6 @@ export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
-  // Local form state
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [pendingVerification, setPendingVerification] = useState(false);
@@ -25,28 +23,19 @@ export default function SignUpScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  /**
-   * When user taps “Continue” on the first form (email + password)
-   */
   const onSignUpPress = async () => {
     if (!isLoaded) return;
     setErrorMessage(null);
     setLoading(true);
 
-    // LOG the emailAddress right before calling Clerk
-  console.log("🔍 [onSignUpPress] emailAddress is:", JSON.stringify(emailAddress));
-
     try {
-      // 1) Create the user
       await signUp.create({
         emailAddress: emailAddress.trim(),
         password,
       });
 
-      // 2) Kick off email verification by code
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
-      // 3) Show the “enter your code” UI
       setPendingVerification(true);
     } catch (err: any) {
       console.error("SignUp error:", err);
@@ -60,9 +49,6 @@ export default function SignUpScreen() {
     }
   };
 
-  /**
-   * When user already received the email code and taps “Verify”
-   */
   const onVerifyPress = async () => {
     if (!isLoaded) return;
     setErrorMessage(null);
@@ -74,7 +60,6 @@ export default function SignUpScreen() {
       });
 
       if (attempt.status === "complete") {
-        // 4) Once verified, set the session active and redirect
         await setActive({ session: attempt.createdSessionId });
         router.replace("/");
       } else {
@@ -92,7 +77,6 @@ export default function SignUpScreen() {
     }
   };
 
-  // If user is in “pending verification” state, show the OTP screen
   if (pendingVerification) {
     return (
       <View className="flex-1 bg-primary">
@@ -149,7 +133,6 @@ export default function SignUpScreen() {
               <Text className="text-light-300">
                 Didn’t get a code?{" "}
               </Text>
-              {/* Offer to resend? Could add a “Resend” link here */}
               <Link href="/sign-in" className="text-accent font-medium">
                 Cancel
               </Link>
@@ -160,7 +143,6 @@ export default function SignUpScreen() {
     );
   }
 
-  // Otherwise, render the “create account” form
   return (
     <View className="flex-1 bg-primary">
       <Image

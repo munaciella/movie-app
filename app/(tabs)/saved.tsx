@@ -12,11 +12,15 @@ import { useEffect, useState } from "react";
 
 import { getSavedMovies, type SavedMovie } from "@/services/appwrite";
 import { useSaved } from "@/context/SavedContext";
+import { useRouter } from "expo-router";
+import { useAuth } from "@clerk/clerk-expo";
 import { images } from "@/constants/images";
 import { icons } from "@/constants/icons";
 import MovieCard from "@/components/MovieCard";
 
 export default function SavedScreen() {
+  const router = useRouter();
+  const { isSignedIn, isLoaded } = useAuth();
   const [savedDocs, setSavedDocs] = useState<SavedMovie[] | null>(null);
   const [loading, setLoading] = useState(true);
   const { removeSaved, savedIds } = useSaved();
@@ -51,6 +55,11 @@ export default function SavedScreen() {
       isMounted = false;
     };
   }, [savedIds]);
+
+  if (isLoaded && !isSignedIn) {
+    router.replace("/sign-in");
+    return null;
+  }
 
   if (loading) {
     return (
