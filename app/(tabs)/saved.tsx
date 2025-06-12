@@ -20,47 +20,50 @@ import MovieCard from "@/components/MovieCard";
 
 export default function SavedScreen() {
   const router = useRouter();
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isLoaded: authLoaded, isSignedIn } = useAuth();
+
   const [savedDocs, setSavedDocs] = useState<SavedMovie[] | null>(null);
   const [loading, setLoading] = useState(true);
   const { removeSaved, savedIds } = useSaved();
 
+  // 1) Redirect if auth is ready but user isn’t signed in
   useEffect(() => {
-    let isMounted = true;
+    if (authLoaded && !isSignedIn) {
+      router.replace("/sign-in");
+    }
+  }, [authLoaded, isSignedIn]);
 
-    const load = async () => {
-      if (!isMounted) return;
+  // 2) Fetch saved docs any time the set of savedIds changes
+  useEffect(() => {
+    if (!authLoaded || !isSignedIn) return;  // don’t load until we know they’re signed in
+
+    let isActive = true;
+    (async () => {
       setLoading(true);
-
       try {
-        const list = await getSavedMovies();
-        if (isMounted) {
-          setSavedDocs(list || []);
-        }
+        const docs = await getSavedMovies();
+        if (isActive) setSavedDocs(docs || []);
       } catch (err) {
         console.error("Error loading saved docs:", err);
-        if (isMounted) {
-          setSavedDocs([]);
-        }
+        if (isActive) setSavedDocs([]);
+      } finally {
+        if (isActive) setLoading(false);
       }
+    })();
 
-      if (isMounted) {
-        setLoading(false);
-      }
-    };
+    return () => { isActive = false; };
+  }, [authLoaded, isSignedIn, savedIds]);
 
-    load();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [savedIds]);
-
-  if (isLoaded && !isSignedIn) {
-    router.replace("/sign-in");
-    return null;
+  // 3) While auth is loading or we’re exiting to sign-in, show spinner
+  if (!authLoaded || (!isSignedIn && authLoaded)) {
+    return (
+      <View className="flex-1 justify-center items-center bg-primary">
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
   }
 
+  // 4) Now we know they’re signed in and we’ve loaded their docs
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-primary">
@@ -69,24 +72,30 @@ export default function SavedScreen() {
     );
   }
 
+  // 5) No saved movies
   if (!savedDocs || savedDocs.length === 0) {
     return (
       <View className="flex-1 bg-primary">
-        <Image
-          source={images.bg}
-          className="absolute w-full z-0"
-          resizeMode="cover"
-        />
-
         <ScrollView
           className="flex-1 px-5"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ minHeight: "100%", paddingBottom: 100 }}
         >
-          <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
+          <Image
+            source={images.bg}
+            className="absolute w-full h-full"
+            resizeMode="cover"
+          />
+
+          <Image
+            source={icons.logo}
+            className="w-12 h-10 mt-20 mb-5 mx-auto"
+          />
 
           <View className="flex-1 justify-center items-center">
-            <Text className="text-gray-400 text-lg">No saved movies yet.</Text>
+            <Text className="text-gray-400 text-lg">
+              No saved movies yet.
+            </Text>
           </View>
         </ScrollView>
       </View>

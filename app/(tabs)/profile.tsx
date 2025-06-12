@@ -61,7 +61,7 @@ export default function Profile() {
         </View>
 
         {/* Main content */}
-        <View className="flex-1 justify-center">
+        <View className="flex-1 items-center py-10">
           {!isLoaded ? (
             <View className="justify-center items-center">
               <ActivityIndicator size="large" color="#ffffff" />
@@ -81,7 +81,7 @@ export default function Profile() {
           ) : (
             <View>
               {/* User Profile Section */}
-              <View className="items-center">
+              <View className="items-center mb-6">
                 {avatarUri ? (
                   <Image
                     source={{ uri: avatarUri }}
@@ -99,52 +99,48 @@ export default function Profile() {
                 <Text className="text-white text-2xl font-bold mb-1">
                   {user.firstName || user.username || "User"}
                 </Text>
-                <Text className="text-light-300 mb-6">
+                <Text className="text-light-300 mb-4">
                   {user.primaryEmailAddress?.emailAddress}
                 </Text>
 
-                <Text className="text-white text-lg font-semibold mb-2">
+                <View className="items-center">
+                  <SignOutButton />
+                </View>
+
+                <Text className="text-white text-lg font-semibold pt-20">
                   Recently Saved
                 </Text>
               </View>
 
               {/* Recent Movies Section */}
-              <View className="h-40">
-                {loadingRecents ? (
-                  <ActivityIndicator size="small" color="#ffffff" />
-                ) : recent && recent.length > 0 ? (
-                  <FlatList
-                    data={recent}
-                    keyExtractor={(i) => i.$id}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ paddingHorizontal: 10 }}
-                    ItemSeparatorComponent={() => <View className="w-4" />}
-                    renderItem={({ item }) => (
-                      <Link href={`/movies/${item.movie_id}`} asChild>
-          <TouchableOpacity>
-                      <Image
-                        source={{ uri: item.poster_url }}
-                        className="w-24 h-32 rounded-lg"
-                        resizeMode="cover"
-                      />
+
+              {loadingRecents ? (
+                <ActivityIndicator size="small" color="#ffffff" />
+              ) : recent && recent.length > 0 ? (
+                <FlatList
+                  data={recent}
+                  keyExtractor={(i) => i.$id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingHorizontal: 10 }}
+                  ItemSeparatorComponent={() => <View className="w-4" />}
+                  renderItem={({ item }) => (
+                    <Link href={`/movies/${item.movie_id}`} asChild>
+                      <TouchableOpacity>
+                        <Image
+                          source={{ uri: item.poster_url }}
+                          className="w-24 h-32 rounded-lg"
+                          resizeMode="cover"
+                        />
                       </TouchableOpacity>
                     </Link>
-                    )}
-                  />
-                ) : (
-                  <Text className="text-gray-400">No recent saves.</Text>
-                )}
-              </View>
+                  )}
+                />
+              ) : (
+                <Text className="text-gray-400">No recent saves.</Text>
+              )}
             </View>
           )}
-        </View>
-
-        {/* Sign Out Button - Always at bottom */}
-        <View className="items-center justify-center mb-36">
-          <View className="w-32">
-          <SignOutButton />
-          </View>
         </View>
       </View>
     </SafeAreaView>
