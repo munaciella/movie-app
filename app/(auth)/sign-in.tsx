@@ -54,13 +54,13 @@ export default function SignInScreen() {
     <View className="flex-1 bg-primary">
       <Image
         source={images.bg}
-        className="absolute w-full h-full"
+        className="absolute w-full"
         resizeMode="cover"
       />
 
       <View className="flex-1 px-5">
         <View className="mt-20 mb-8 items-center">
-          <Image source={icons.logo} className="w-12 h-10" resizeMode="contain" />
+          <Image source={icons.logo} className="w-12 h-10" />
         </View>
 
         <View className="flex-1 justify-center">

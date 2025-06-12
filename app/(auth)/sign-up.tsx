@@ -28,6 +28,18 @@ export default function SignUpScreen() {
     setErrorMessage(null);
     setLoading(true);
 
+    const pwdRegex =
+      /^(?=.{12,}$)(?=(.*[A-Z]){1,})(?=(.*\d){2,})(?=(.*\W){2,}).*$/;
+    if (!pwdRegex.test(password)) {
+      setErrorMessage(
+        "Password must be at least 12 characters,\n" +
+          "include at least 1 uppercase letter,\n" +
+          "2 numbers, and 2 special characters."
+      );
+      setLoading(false);
+      return;
+    }
+
     try {
       await signUp.create({
         emailAddress: emailAddress.trim(),
@@ -68,9 +80,7 @@ export default function SignUpScreen() {
     } catch (err: any) {
       console.error("Verification error:", err);
       const msg =
-        err?.errors?.[0]?.message ||
-        err?.message ||
-        "Invalid or expired code.";
+        err?.errors?.[0]?.message || err?.message || "Invalid or expired code.";
       setErrorMessage(msg);
     } finally {
       setLoading(false);
@@ -82,13 +92,13 @@ export default function SignUpScreen() {
       <View className="flex-1 bg-primary">
         <Image
           source={images.bg}
-          className="absolute w-full h-full"
+          className="absolute w-full"
           resizeMode="cover"
         />
 
         <View className="flex-1 px-5">
           <View className="mt-20 mb-8 items-center">
-            <Image source={icons.logo} className="w-12 h-10" resizeMode="contain" />
+            <Image source={icons.logo} className="w-12 h-10" />
           </View>
 
           <View className="flex-1 justify-center">
@@ -123,16 +133,12 @@ export default function SignUpScreen() {
               {loading ? (
                 <ActivityIndicator color="#000" />
               ) : (
-                <Text className="text-black font-semibold text-lg">
-                  Verify
-                </Text>
+                <Text className="text-black font-semibold text-lg">Verify</Text>
               )}
             </TouchableOpacity>
 
             <View className="mt-6 flex-row justify-center">
-              <Text className="text-light-300">
-                Didn’t get a code?{" "}
-              </Text>
+              <Text className="text-light-300">Didn’t get a code? </Text>
               <Link href="/sign-in" className="text-accent font-medium">
                 Cancel
               </Link>
@@ -147,13 +153,13 @@ export default function SignUpScreen() {
     <View className="flex-1 bg-primary">
       <Image
         source={images.bg}
-        className="absolute w-full h-full"
+        className="absolute w-full"
         resizeMode="cover"
       />
 
       <View className="flex-1 px-5">
         <View className="mt-20 mb-8 items-center">
-          <Image source={icons.logo} className="w-12 h-10" resizeMode="contain" />
+          <Image source={icons.logo} className="w-12 h-10" />
         </View>
 
         <View className="flex-1 justify-center">
@@ -201,9 +207,7 @@ export default function SignUpScreen() {
             {loading ? (
               <ActivityIndicator color="#000" />
             ) : (
-              <Text className="text-black font-semibold text-lg">
-                Continue
-              </Text>
+              <Text className="text-black font-semibold text-lg">Continue</Text>
             )}
           </TouchableOpacity>
 
