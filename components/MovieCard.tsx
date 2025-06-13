@@ -77,7 +77,6 @@ const MovieCard = ({
       uri = `https://image.tmdb.org/t/p/w500${poster_path}`;
     }
   } else {
-    // Placeholder when no poster is available:
     uri = "https://placehold.co/600x400/1a1a1a/FFFFFF.png";
   }
 
