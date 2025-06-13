@@ -26,16 +26,14 @@ export default function SavedScreen() {
   const [loading, setLoading] = useState(true);
   const { removeSaved, savedIds } = useSaved();
 
-  // 1) Redirect if auth is ready but user isn’t signed in
   useEffect(() => {
     if (authLoaded && !isSignedIn) {
       router.replace("/sign-in");
     }
-  }, [authLoaded, isSignedIn]);
+  }, [authLoaded, isSignedIn, router]);
 
-  // 2) Fetch saved docs any time the set of savedIds changes
   useEffect(() => {
-    if (!authLoaded || !isSignedIn) return;  // don’t load until we know they’re signed in
+    if (!authLoaded || !isSignedIn) return;
 
     let isActive = true;
     (async () => {
@@ -51,10 +49,11 @@ export default function SavedScreen() {
       }
     })();
 
-    return () => { isActive = false; };
+    return () => {
+      isActive = false;
+    };
   }, [authLoaded, isSignedIn, savedIds]);
 
-  // 3) While auth is loading or we’re exiting to sign-in, show spinner
   if (!authLoaded || (!isSignedIn && authLoaded)) {
     return (
       <View className="flex-1 justify-center items-center bg-primary">
@@ -63,7 +62,6 @@ export default function SavedScreen() {
     );
   }
 
-  // 4) Now we know they’re signed in and we’ve loaded their docs
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-primary">
@@ -72,7 +70,6 @@ export default function SavedScreen() {
     );
   }
 
-  // 5) No saved movies
   if (!savedDocs || savedDocs.length === 0) {
     return (
       <View className="flex-1 bg-primary">
@@ -87,15 +84,10 @@ export default function SavedScreen() {
             resizeMode="cover"
           />
 
-          <Image
-            source={icons.logo}
-            className="w-12 h-10 mt-20 mb-5 mx-auto"
-          />
+          <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
 
           <View className="flex-1 justify-center items-center">
-            <Text className="text-gray-400 text-lg">
-              No saved movies yet.
-            </Text>
+            <Text className="text-gray-400 text-lg">No saved movies yet.</Text>
           </View>
         </ScrollView>
       </View>

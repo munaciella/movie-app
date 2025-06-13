@@ -55,12 +55,10 @@ export default function Profile() {
       />
 
       <View className="flex-1 px-10">
-        {/* Logo */}
         <View className="mt-3 mb-5 items-center">
           <Image source={icons.logo} className="w-12 h-10" />
         </View>
 
-        {/* Main content */}
         <View className="flex-1 items-center py-10">
           {!isLoaded ? (
             <View className="justify-center items-center">
@@ -80,7 +78,6 @@ export default function Profile() {
             </View>
           ) : (
             <View>
-              {/* User Profile Section */}
               <View className="items-center mb-6">
                 {avatarUri ? (
                   <Image
@@ -111,8 +108,6 @@ export default function Profile() {
                   Recently Saved
                 </Text>
               </View>
-
-              {/* Recent Movies Section */}
 
               {loadingRecents ? (
                 <ActivityIndicator size="small" color="#ffffff" />
